@@ -1,0 +1,211 @@
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 1000px;
+  margin: 20px;
+  transition: filter 0.3s;
+}
+
+.container.blur {
+  filter: blur(5px);
+}
+
+.header {
+  width: 100%;
+  background-color: #ffc107; /* Yellow */
+  color: white;
+  padding: 15px;
+  border-radius: 15px 15px 0 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.url-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.url-bar {
+  padding: 15px;
+  border: 2px solid #ffc107; /* Yellow */
+  border-radius: 10px;
+  font-size: 16px;
+  flex: 1;
+  min-width: 0; /* Allows flex item to shrink */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.url-bar:focus {
+  border-color: #ffca28;
+  outline: none;
+}
+
+.send-button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  background-color: #ffc107; /* Yellow */
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.send-button:hover {
+  background-color: #ffca28;
+}
+
+.options {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* Adjusted gap for better spacing */
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.option-button {
+  padding: 10px 20px;
+  border: 2px solid #ffc107; /* Yellow */
+  border-radius: 10px;
+  background-color: white;
+  color: #ffc107;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.option-button.active,
+.option-button:hover {
+  background-color: #ffc107; /* Yellow */
+  color: white;
+}
+
+.content {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.request-body,
+.response-box {
+  flex: 1;
+  padding: 15px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-family: monospace;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.request-body {
+  background-color: #fff;
+  min-width: 0;
+  height: 150px;
+}
+
+.response-box {
+  background-color: #f9f9f9;
+  min-width: 0;
+  height: 150px;
+}
+
+@media (max-width: 600px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .request-body,
+  .response-box {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .url-container {
+    flex-direction: column;
+  }
+
+  .send-button {
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .options {
+    flex-direction: column;
+    gap: 10px; /* Adjusted gap for small screens */
+  }
+}
+
+/* Popup Styles */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.popup-content {
+  margin-bottom: 20px;
+}
+
+.close-button {
+  background-color: #ffc107; /* Yellow */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  background-color: #ffca28;
+}
