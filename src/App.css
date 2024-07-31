@@ -81,9 +81,15 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.send-button:hover {
-  background-color: #ffca28;
+.send-button:active {
+  transform: scale(0.95);
+  background-color: #ffb300; /* Slightly darker yellow */
 }
+
+.send-button:focus {
+  outline: none;
+}
+
 
 .options {
   display: flex;
@@ -208,4 +214,25 @@ body {
 
 .close-button:hover {
   background-color: #ffca28;
+}
+
+.mode-container {
+  margin-bottom: 20px;
+}
+
+.mode-dropdown {
+  padding: 10px;
+  border: 2px solid #ffc107;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #333;
+  background-color: white;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+.mode-dropdown:focus,
+.mode-dropdown:hover {
+  border-color: #ffca28;
 }
