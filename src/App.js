@@ -3,51 +3,22 @@ import './App.css';
 import axios from 'axios';
 
 function App() {
-  const [url, setUrl] = useState('http://localhost:8080/appapplics'); // Default URL for your API
+  const [baseURL, setBaseURL] = useState('http://localhost:8080/');
+  const [endpoint, setEndpoint] = useState('all');
   const [requestBody, setRequestBody] = useState('');
   const [response, setResponse] = useState('');
-  const [selectedApp, setSelectedApp] = useState('appA');
+  const [selectedApp, setSelectedApp] = useState('selectAll');
   const [popupMessage, setPopupMessage] = useState('');
   const [showPopup, setShowPopup] = useState(false);
 
   const handleSendRequest = async () => {
     try {
-      let dummyResponse;
+      const url = `${baseURL}${endpoint}`;
+      const { data } = await axios.post(url, requestBody, {
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-      switch (selectedApp) {
-        case 'selectAll':
-          dummyResponse = { message: "All apps selected." };
-          break;
-        case 'genericBeaureauService':
-          dummyResponse = { message: "Generic Bureau Service response." };
-          break;
-        case 'scores':
-          dummyResponse = { message: "Scores response." };
-          break;
-        case 'mappingService':
-          dummyResponse = { message: "Mapping Service response." };
-          break;
-        case 'appA':
-          dummyResponse = { message: "appA response." };
-          break;
-        case 'appACQ':
-          dummyResponse = { message: "appACQ response." };
-          break;
-        case 'bureauCCC':
-          dummyResponse = { message: "Bureau CCC response." };
-          break;
-        case 'bureauCBI':
-          dummyResponse = { message: "Bureau CBI response." };
-          break;
-        case 'synappsCSI':
-          dummyResponse = { message: "Synapps CSI response." };
-          break;
-        default:
-          dummyResponse = { message: "Default response." };
-          break;
-      }
-
-      setResponse(JSON.stringify(dummyResponse, null, 2));
+      setResponse(JSON.stringify(data, null, 2));
       setPopupMessage(`Request for ${selectedApp} was successful`);
       setShowPopup(true);
     } catch (error) {
@@ -63,6 +34,52 @@ function App() {
     setPopupMessage('');
   };
 
+  const handleAppChange = (e) => {
+    const selected = e.target.value;
+    setSelectedApp(selected);
+
+    let newEndpoint;
+    switch (selected) {
+      case 'appA':
+        newEndpoint = 'appa';
+        break;
+      case 'appACQ':
+        newEndpoint = 'appacq';
+        break;
+      case 'bureauCCC':
+        newEndpoint = 'bureauccc';
+        break;
+      case 'bureauCBI':
+        newEndpoint = 'bureaucbi';
+        break;
+      case 'genericBeaureauService':
+        newEndpoint = 'genericbeureau';
+        break;
+      case 'scores':
+        newEndpoint = 'scores';
+        break;
+      case 'mappingService':
+        newEndpoint = 'mapping';
+        break;
+      case 'synappsCSI':
+        newEndpoint = 'synapps';
+        break;
+      default:
+        newEndpoint = 'appapplics';
+        break;
+    }
+
+    setEndpoint(newEndpoint);
+    setRequestBody(''); // Clear the request body
+  };
+
+  const handleURLChange = (e) => {
+    const url = e.target.value;
+    const [newBaseURL, newEndpoint] = url.split(/\/(?=[^/]+$)/);
+    setBaseURL(newBaseURL);
+    setEndpoint(newEndpoint || '');
+  };
+
   return (
     <div>
       <div className={`container ${showPopup ? 'blur' : ''}`}>
@@ -72,69 +89,26 @@ function App() {
             <input
               type="text"
               className="url-bar"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              value={`${baseURL}${endpoint}`}
+              onChange={handleURLChange}
               placeholder="Enter URL"
             />
             <button className="send-button" onClick={handleSendRequest}>
               Send
             </button>
           </div>
-          <div className="options">
-            <button
-              className={`option-button ${selectedApp === 'selectAll' ? 'active' : ''}`}
-              onClick={() => setSelectedApp('selectAll')}
-            >
-              Select All
-            </button>
-            <button
-              className={`option-button ${selectedApp === 'genericBeaureauService' ? 'active' : ''}`}
-              onClick={() => setSelectedApp('genericBeaureauService')}
-            >
-              Generic Bureau Service
-            </button>
-            <button
-              className={`option-button ${selectedApp === 'scores' ? 'active' : ''}`}
-              onClick={() => setSelectedApp('scores')}
-            >
-              Scores
-            </button>
-            <button
-              className={`option-button ${selectedApp === 'mappingService' ? 'active' : ''}`}
-              onClick={() => setSelectedApp('mappingService')}
-            >
-              Mapping Service
-            </button>
-            <button
-              className={`option-button ${selectedApp === 'appA' ? 'active' : ''}`}
-              onClick={() => setSelectedApp('appA')}
-            >
-              appA
-            </button>
-            <button
-              className={`option-button ${selectedApp === 'appACQ' ? 'active' : ''}`}
-              onClick={() => setSelectedApp('appACQ')}
-            >
-              appACQ
-            </button>
-            <button
-              className={`option-button ${selectedApp === 'bureauCCC' ? 'active' : ''}`}
-              onClick={() => setSelectedApp('bureauCCC')}
-            >
-              Bureau CCC
-            </button>
-            <button
-              className={`option-button ${selectedApp === 'bureauCBI' ? 'active' : ''}`}
-              onClick={() => setSelectedApp('bureauCBI')}
-            >
-              Bureau CBI
-            </button>
-            <button
-              className={`option-button ${selectedApp === 'synappsCSI' ? 'active' : ''}`}
-              onClick={() => setSelectedApp('synappsCSI')}
-            >
-              Synapps CSI
-            </button>
+          <div className="mode-container">
+            <select className="mode-dropdown" value={selectedApp} onChange={handleAppChange}>
+              <option value="selectAll">Select All</option>
+              <option value="genericBeaureauService">Generic Bureau Service</option>
+              <option value="scores">Scores</option>
+              <option value="mappingService">Mapping Service</option>
+              <option value="appA">appA</option>
+              <option value="appACQ">appACQ</option>
+              <option value="bureauCCC">Bureau CCC</option>
+              <option value="bureauCBI">Bureau CBI</option>
+              <option value="synappsCSI">Synapps CSI</option>
+            </select>
           </div>
         </div>
         <div className="content">
