@@ -2,24 +2,48 @@ import React, { useState } from 'react';
 import './App.css';
 import axios from 'axios';
 
+// Constants
+const MODES = [
+  { value: 'genericBeaureauService', label: 'Generic Bureau' },
+  { value: 'scores', label: 'Scores' },
+  { value: 'mappingService', label: 'Mapping' },
+  { value: 'appA', label: 'appA' },
+  { value: 'appACQ', label: 'appACQ' },
+  { value: 'bureauCCC', label: 'Bureau CCC' },
+  { value: 'bureauCBI', label: 'Bureau CBI' },
+  { value: 'synappsCSI', label: 'Synapps' },
+];
+
+const ENVIRONMENTS = {
+  qa: 'https://qa.example.com',
+  dev: 'https://dev.example.com',
+};
+
 function App() {
   const [baseURL, setBaseURL] = useState('http://localhost:8080/');
-  const [endpoint, setEndpoint] = useState('all');
+  const [endpoint, setEndpoint] = useState('getchoreoxresponse');
   const [requestBody, setRequestBody] = useState('');
   const [response, setResponse] = useState('');
-  const [selectedApp, setSelectedApp] = useState('selectAll');
+  const [selectedModes, setSelectedModes] = useState([]);
+  const [selectedEnv, setSelectedEnv] = useState('qa');
   const [popupMessage, setPopupMessage] = useState('');
   const [showPopup, setShowPopup] = useState(false);
 
   const handleSendRequest = async () => {
     try {
       const url = `${baseURL}${endpoint}`;
-      const { data } = await axios.post(url, requestBody, {
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const modesHeader = selectedModes.join(',');
+      const headers = {
+        'Content-Type': 'application/json',
+        'mode': modesHeader,
+        'url': ENVIRONMENTS[selectedEnv],
+      };
 
+      console.log('Request Headers:', headers);
+
+      const { data } = await axios.post(url, requestBody, { headers });
       setResponse(JSON.stringify(data, null, 2));
-      setPopupMessage(`Request for ${selectedApp} was successful`);
+      setPopupMessage('Request was successful');
       setShowPopup(true);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -34,43 +58,15 @@ function App() {
     setPopupMessage('');
   };
 
-  const handleAppChange = (e) => {
-    const selected = e.target.value;
-    setSelectedApp(selected);
+  const handleModeChange = (e) => {
+    const { value, checked } = e.target;
+    setSelectedModes((prev) =>
+      checked ? [...prev, value] : prev.filter((mode) => mode !== value)
+    );
+  };
 
-    let newEndpoint;
-    switch (selected) {
-      case 'appA':
-        newEndpoint = 'appa';
-        break;
-      case 'appACQ':
-        newEndpoint = 'appacq';
-        break;
-      case 'bureauCCC':
-        newEndpoint = 'bureauccc';
-        break;
-      case 'bureauCBI':
-        newEndpoint = 'bureaucbi';
-        break;
-      case 'genericBeaureauService':
-        newEndpoint = 'genericbeureau';
-        break;
-      case 'scores':
-        newEndpoint = 'scores';
-        break;
-      case 'mappingService':
-        newEndpoint = 'mapping';
-        break;
-      case 'synappsCSI':
-        newEndpoint = 'synapps';
-        break;
-      default:
-        newEndpoint = 'appapplics';
-        break;
-    }
-
-    setEndpoint(newEndpoint);
-    setRequestBody(''); // Clear the request body
+  const handleEnvChange = (e) => {
+    setSelectedEnv(e.target.value);
   };
 
   const handleURLChange = (e) => {
@@ -97,18 +93,42 @@ function App() {
               Send
             </button>
           </div>
-          <div className="mode-container">
-            <select className="mode-dropdown" value={selectedApp} onChange={handleAppChange}>
-              <option value="selectAll">Select All</option>
-              <option value="genericBeaureauService">Generic Bureau Service</option>
-              <option value="scores">Scores</option>
-              <option value="mappingService">Mapping Service</option>
-              <option value="appA">appA</option>
-              <option value="appACQ">appACQ</option>
-              <option value="bureauCCC">Bureau CCC</option>
-              <option value="bureauCBI">Bureau CBI</option>
-              <option value="synappsCSI">Synapps CSI</option>
-            </select>
+          <div className="mode-header">
+            {MODES.map((mode) => (
+              <label key={mode.value} className="option-button">
+                <input
+                  type="checkbox"
+                  value={mode.value}
+                  checked={selectedModes.includes(mode.value)}
+                  onChange={handleModeChange}
+                  style={{ marginRight: '10px' }}
+                />
+                {mode.label}
+              </label>
+            ))}
+          </div>
+          
+          <div className="url-header">
+            <label className="option-button">
+              <input
+                type="radio"
+                value="qa"
+                checked={selectedEnv === 'qa'}
+                onChange={handleEnvChange}
+                style={{ marginRight: '10px' }}
+              />
+              QA
+            </label>
+            <label className="option-button">
+              <input
+                type="radio"
+                value="dev"
+                checked={selectedEnv === 'dev'}
+                onChange={handleEnvChange}
+                style={{ marginRight: '10px' }}
+              />
+              DEV
+            </label>
           </div>
         </div>
         <div className="content">
