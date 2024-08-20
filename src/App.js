@@ -20,26 +20,25 @@ const ENVIRONMENTS = {
 };
 
 function App() {
-  const [baseURL, setBaseURL] = useState('http://localhost:8080/');
-  const [endpoint, setEndpoint] = useState('getchoreoxresponse');
+  const [url, setURL] = useState('');
   const [requestBody, setRequestBody] = useState('');
   const [response, setResponse] = useState('');
   const [selectedModes, setSelectedModes] = useState([]);
-  const [selectedEnv, setSelectedEnv] = useState('qa');
+  const [selectedEnv, setSelectedEnv] = useState('');
   const [popupMessage, setPopupMessage] = useState('');
   const [showPopup, setShowPopup] = useState(false);
 
   const handleSendRequest = async () => {
     try {
-      const url = `${baseURL}${endpoint}`;
       const modesHeader = selectedModes.join(',');
       const headers = {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain',
         'mode': modesHeader,
         'url': ENVIRONMENTS[selectedEnv],
       };
 
       console.log('Request Headers:', headers);
+      console.log('Request Body:', requestBody);
 
       const { data } = await axios.post(url, requestBody, { headers });
       setResponse(JSON.stringify(data, null, 2));
@@ -69,13 +68,6 @@ function App() {
     setSelectedEnv(e.target.value);
   };
 
-  const handleURLChange = (e) => {
-    const url = e.target.value;
-    const [newBaseURL, newEndpoint] = url.split(/\/(?=[^/]+$)/);
-    setBaseURL(newBaseURL);
-    setEndpoint(newEndpoint || '');
-  };
-
   return (
     <div>
       <div className={`container ${showPopup ? 'blur' : ''}`}>
@@ -85,8 +77,8 @@ function App() {
             <input
               type="text"
               className="url-bar"
-              value={`${baseURL}${endpoint}`}
-              onChange={handleURLChange}
+              value={url}
+              onChange={(e) => setURL(e.target.value)}
               placeholder="Enter URL"
             />
             <button className="send-button" onClick={handleSendRequest}>
